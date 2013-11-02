@@ -4,7 +4,7 @@
 # Author:   Christian Floisand
 # Version:  1.0
 # Created:  2013/10/31
-# Modified: 2013/11/01
+# Modified: 2013/11/02
 # Copyright (c) 2013 Christian Floisand
 #
 # Outputs the total number of code lines, comment lines, and whitespace in a project.
@@ -43,9 +43,6 @@ def getFiletypes():
 
     The built-in map function is used to insert a '.' at the front of each extension, which is required
     when matching the file extension against files in the search.
-
-    Raises:
-        IndexError: if command-line argument specifying file types is not given.
     """
     
     try:
@@ -73,10 +70,6 @@ def getPath():
     """Fetches the path the user has requested to act as the root directory in the recursive search.
 
     If no path is given, or a '.' is specified, the path defauls to the current working directory.
-
-    Raises:
-        IndexError: if command-line argument specifying the search path is not given.
-        But this is optional, and will default to the current working directory without halting execution.
     """
     
     try:
@@ -107,18 +100,50 @@ def getFiles(searchPath, fileExts):
 
     return fileList
 
+def printSummary(counts):
+    """Formats and prints the output of the counts totalled from all the files read.
+
+    Also draws a horizontal bar graph for visualizing the relativity of the counts.
+    """
+    formatString = "{0:<20}{1:>7}"
+    
+    totalLines = counts["code"] + counts["comment"] + counts["whitespace"]
+    try:
+        # Round up by adding 0.5 before converting back to integer for use in range() function.
+        codeGraph = int(float(counts["code"]) / totalLines * 100 + 0.5)
+        commentGraph = int(float(counts["comment"]) / totalLines * 100 + 0.5)
+        whitespaceGraph = int(float(counts["whitespace"]) / totalLines * 100 + 0.5)
+    except ZeroDivisionError:
+        codeGraph, commentGraph, whitespaceGraph = 0, 0, 0
+    
+    print
+    print "SUMMARY"
+    print "------------------------------"
+    print formatString.format("Lines of code:", counts["code"]), "".join(["%s" % "+" for i in range(codeGraph)])
+    print formatString.format("Comments:", counts["comment"]), "".join(["%s" % "+" for i in range(commentGraph)])
+    print formatString.format("Whitespace:", counts["whitespace"]), "".join(["%s" % "+" for i in range(whitespaceGraph)])
+    print "------------------------------"
+    print formatString.format("Files read:", counts["files-read"])
+    if counts["files-failed"] > 0:
+        print formatString.format("Files failed:", counts["files-failed"])
+        for item in counts["failed-files-list"]:
+            print "\t" + item
+    print
+
 
 ## main ##
 
 if sys.argv[1] in g_ValidHelpFlags:
     printUsage()
 else:
-    totalCodeCount = 0
-    totalCommentCount = 0
-    totalWhitespaceCount = 0
-    totalFilesRead = 0
-    totalFilesFailed = 0
-    failedFiles = []
+    totalCounts = {
+        "code"          :   0,
+        "comment"       :   0,
+        "whitespace"    :   0,
+        "files-read"    :   0,
+        "files-failed"  :   0,
+        "failed-files-list" : []
+        }
     
     files = getFiles(getPath(), getFiletypes())
     for currentFile in files:
@@ -126,20 +151,15 @@ else:
             fileHandle = open(currentFile, "r")
             counter = LocCounter(os.path.splitext(currentFile)[1])
             for currentLine in fileHandle:
-                counter.countLine(currentLine)
-            totalCodeCount += counter.codeCount
-            totalCommentCount += counter.commentCount
-            totalWhitespaceCount += counter.whitespaceCount
-            totalFilesRead += 1
+                counter.parseLine(currentLine)
+            totalCounts["code"] += counter.codeCount
+            totalCounts["comment"] += counter.commentCount
+            totalCounts["whitespace"] += counter.whitespaceCount
+            totalCounts["files-read"] += 1
             fileHandle.close()
 
         except IOError:
-            totalFilesFailed += 1
-            failedFiles.extend(currentFile)
+            totalCounts["files-failed"] += 1
+            totalCounts["failed-files-list"].extend(currentFile)
 
-    print "Total number of files read: %d" % totalFilesRead
-    print "Total number of files that failed to read: %d" % totalFilesFailed
-    print failedFiles
-    print "Total lines of code: %d" % totalCodeCount
-    print "Total lines of comments: %d" % totalCommentCount
-    print "Total lines of whitespace: %d" % totalWhitespaceCount
+    printSummary(totalCounts)
