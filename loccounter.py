@@ -38,13 +38,15 @@ Lua_CommentTags = {
 CommentTags = {
     ".c"    : C_CommentTags,
     ".cpp"  : C_CommentTags,
+    ".cc"   : C_CommentTags,
     ".h"    : C_CommentTags,
     ".hpp"  : C_CommentTags,
     ".m"    : C_CommentTags,
     ".mm"   : C_CommentTags,
     ".cs"   : C_CommentTags,
     ".py"   : Py_CommentTags,
-    ".lua"  : Lua_CommentTags
+    ".lua"  : Lua_CommentTags,
+    ".js"   : C_CommentTags
     }
 
 
@@ -141,7 +143,7 @@ class LocCounter:
         return
 
     def parseLine(self, line):
-        """This is the only public method exposed by the class, and should be the only one called by the client."""
+        """Initiates parsing of the given line read from a source code file."""
         line = line.strip()
         if not self.__findWhitespace(line):
             self.__countLine(line)

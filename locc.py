@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 #
 # Lines of Code Counter
 #
@@ -12,15 +14,12 @@
 # in collecting the data.
 #
 
-import os
-import sys
-import string
+import os, sys, string
 from loccounter import LocCounter
 
 
 # Globals
-g_CommandLineErrorString = "Error parsing command-line arguments."
-g_SupportedFiletypes = ["c", "cpp", "m", "mm", "h", "hpp", "cs", "py", "lua"]
+g_SupportedFiletypes = ["c", "cpp", "cc", "m", "mm", "h", "hpp", "cs", "py", "lua", "js"]
 g_ValidHelpFlags = ["-h", "-H", "--help", "-?"]
 
 
@@ -28,12 +27,12 @@ def printUsage():
     """Prints usage information to user.
 
     Current supported file types:
-        c, cpp, m, mm, h, hpp, cs, py, lua
+        c, cpp, cc, m, mm, h, hpp, cs, py, lua, js
     """
     
-    print "usage: python loc.py -files=<filetypes...> [path]"
+    print "usage: locc.py -files=<filetypes...> [path]"
     print "\t-filetypes\tA comma-separated list of one of the supported source code file extensions:"
-    print "\t\t\tc, cpp, m, mm, h, hpp, cs, py, lua"
+    print "\t\t\t", ", ".join(["%s" % s for s in g_SupportedFiletypes])
     print "\t-path\t\tSpecifies the root directory to begin recursively searching for source files."
     print "\t\t\tIf not given, or '.', the current working directory is used."
     print 
@@ -47,7 +46,7 @@ def getFiletypes():
     
     try:
         if not sys.argv[1][0:7] == "-files=":
-            print g_CommandLineErrorString
+            print "Error parsing command-line arguments."
             printUsage()
             sys.exit(0)
 
@@ -60,7 +59,7 @@ def getFiletypes():
         fTypes = map(lambda f: "." + f, fTypes)
         
     except IndexError:
-        print g_CommandLineErrorString
+        print "Error parsing command-line arguments."
         printUsage()
         sys.exit(0)
 
