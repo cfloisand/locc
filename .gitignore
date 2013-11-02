@@ -2,6 +2,9 @@
 
 *.py[cod]
 
+# Mac-specific
+*.DS_Store
+
 # C extensions
 *.so
 
