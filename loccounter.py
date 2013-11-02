@@ -107,7 +107,6 @@ class LocCounter:
         return False
 
     def __countComments(self, line):
-        line = line.strip()
         if self._inblock:
             self.commentCount += 1
             # If when in the block, only a closing block comment tag is found, take back the count that was
@@ -121,19 +120,28 @@ class LocCounter:
             return True
         
         if self.__readOpenBlockComment(line):
-            # Only count this as a comment line if there is more than just the opening tag.
+            # Make sure than one-line block comments are accounted for.
+            if self.__readCloseBlockComment(line):
+                self.commentCount += 1
+                return True
+            # Only count as a comment line if there's more than just the opening tag.
             if len(line) > self._openTagLength:
                 self.commentCount += 1
-            return True
+                return True
 
         return False
 
     def countLine(self, line):
         """This is the only public method exposed by the class, and should be the only one called by the client."""
+        line = line.strip()
         if not self.__countWhitespace(line) and not self.__countComments(line):
             self.codeCount += 1
     
 
 if __name__ == "__main__":
-    pass
+    counter = LocCounter(".py")
+    counter.countLine("def afunc(): # with a comment")
+    print "Lines of code: %d" % counter.codeCount
+    print "Lines of comment: %d" % counter.commentCount
+
 

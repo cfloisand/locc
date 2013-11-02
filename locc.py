@@ -138,6 +138,8 @@ else:
             failedFiles.extend(currentFile)
 
     print "Total number of files read: %d" % totalFilesRead
+    print "Total number of files that failed to read: %d" % totalFilesFailed
+    print failedFiles
     print "Total lines of code: %d" % totalCodeCount
     print "Total lines of comments: %d" % totalCommentCount
     print "Total lines of whitespace: %d" % totalWhitespaceCount
