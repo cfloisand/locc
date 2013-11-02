@@ -7,7 +7,6 @@
 # Version:  1.0
 # Created:  2013/10/31
 # Modified: 2013/11/02
-# Copyright (c) 2013 Christian Floisand
 #
 # Outputs the total number of code lines, comment lines, and whitespace in a project.
 # The files parsed are given by their extensions so the client can decide which file types to use
