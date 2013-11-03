@@ -109,16 +109,6 @@ class LocCounter:
                 self.commentCount += 1
             return
 
-        # This check for one-line comments includes inline comments (following a line of source code).
-        for tag in self._tags["line"]:
-            index = line.find(tag)
-            if index >= 0:
-                if not len(line) == self._lineTagLength:
-                    self.commentCount += 1
-                if index > 0:
-                    self.codeCount += 1
-                return
-
         index = self.__findBlockTag(line, "block_open")
         if index >= 0:
             if index > 0:
@@ -136,6 +126,16 @@ class LocCounter:
                 self.commentCount += 1
 
             return
+
+        # This check for one-line comments includes inline comments (following a line of source code).
+        for tag in self._tags["line"]:
+            index = line.find(tag)
+            if index >= 0:
+                if not len(line) == self._lineTagLength:
+                    self.commentCount += 1
+                if index > 0:
+                    self.codeCount += 1
+                return
 
         self.codeCount += 1
         return
