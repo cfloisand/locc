@@ -104,11 +104,9 @@ class LocCounter:
         comments, following a line of source code.
         """
         if self._inBlock:
-            self.commentCount += 1
-            # If when in the block, only a closing block comment tag is found, take back the count that was
-            # added since this shouldn't count as a comment line.
-            if self.__findBlockTag(line, "block_close") == 0:
-                self.commentCount -= 1
+            # Only increment comment count if more than just the closing tag was found.
+            if not self.__findBlockTag(line, "block_close") == 0:
+                self.commentCount += 1
             return
 
         # This check for one-line comments includes inline comments (following a line of source code).
