@@ -158,6 +158,6 @@ else:
 
         except IOError:
             totalCounts["files-failed"] += 1
-            totalCounts["failed-files-list"].extend(currentFile)
+            totalCounts["failed-files-list"].append(currentFile)
 
     printSummary(totalCounts)
