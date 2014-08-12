@@ -2,9 +2,9 @@
 # Lines of Code Counter Class Module
 #
 # Author:   Christian Floisand
-# Version:  1.0
+# Version:  1.0.2
 # Created:  2013/11/01
-# Modified: 2013/11/02
+# Modified: 2013/11/07
 #
 
 import string
@@ -105,6 +105,7 @@ class LocCounter:
         """
         if self._inBlock:
             # Only increment comment count if more than just the closing tag was found.
+            # (If function returns -1, then no closing tag was found, which means there is comment text).
             if not self.__findBlockTag(line, "block_close") == 0:
                 self.commentCount += 1
             return
@@ -118,7 +119,7 @@ class LocCounter:
             newLine = line[index + self._openTagLength:]
             
             # Make sure than one-line block comments are accounted for.
-            if self.__findBlockTag(newLine, "block_close") > 0 :
+            if self.__findBlockTag(newLine, "block_close") > 0:
                 self.commentCount += 1
                 return
             

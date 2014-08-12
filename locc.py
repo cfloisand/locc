@@ -4,9 +4,9 @@
 # Lines of Code Counter
 #
 # Author:   Christian Floisand
-# Version:  1.0
+# Version:  1.0.2
 # Created:  2013/10/31
-# Modified: 2013/11/02
+# Modified: 2014/08/12
 #
 # Outputs the total number of code lines, comment lines, and whitespace in a project.
 # The files parsed are given by their extensions so the client can decide which file types to use
@@ -32,9 +32,17 @@ def printUsage():
     print "usage: locc.py -files=<filetypes...> [path]"
     print "\t-filetypes\tA comma-separated list of one of the supported source code file extensions:"
     print "\t\t\t", ", ".join(["%s" % s for s in g_SupportedFiletypes])
-    print "\t-path\t\tSpecifies the root directory to begin recursively searching for source files."
+    print "\tpath\t\tSpecifies the root directory to begin recursively searching for source files."
     print "\t\t\tIf not given, or '.', the current working directory is used."
     print 
+
+def printErrorAndExit():
+    """Prints error information resulting from invalid arguments or parsing errors and exits.
+    """
+
+    print "Error parsing command-line arguments."
+    print "locc.py: run with -h for help and usage information."
+    sys.exit(0)
 
 def getFiletypes():
     """Fetches the source code file types the user has requested.
@@ -45,9 +53,7 @@ def getFiletypes():
     
     try:
         if not sys.argv[1][0:7] == "-files=":
-            print "Error parsing command-line arguments."
-            printUsage()
-            sys.exit(0)
+            printErrorAndExit()
 
         fTypes = string.split(sys.argv[1][7:], ",") # Start at index 7 since indices 0-6 is the option specifier '-files='
         for t in fTypes:
@@ -58,9 +64,7 @@ def getFiletypes():
         fTypes = map(lambda f: "." + f, fTypes)
         
     except IndexError:
-        print "Error parsing command-line arguments."
-        printUsage()
-        sys.exit(0)
+        printErrorAndExit()
 
     return fTypes
 
@@ -131,33 +135,40 @@ def printSummary(counts):
 
 ## main ##
 
-if sys.argv[1] in g_ValidHelpFlags:
-    printUsage()
-else:
-    totalCounts = {
-        "code"          :   0,
-        "comment"       :   0,
-        "whitespace"    :   0,
-        "files-read"    :   0,
-        "files-failed"  :   0,
-        "failed-files-list" : []
-        }
-    
-    files = getFiles(getPath(), getFiletypes())
-    for currentFile in files:
-        try:
-            fileHandle = open(currentFile, "r")
-            counter = LocCounter(os.path.splitext(currentFile)[1])
-            for currentLine in fileHandle:
-                counter.parseLine(currentLine)
-            totalCounts["code"] += counter.codeCount
-            totalCounts["comment"] += counter.commentCount
-            totalCounts["whitespace"] += counter.whitespaceCount
-            totalCounts["files-read"] += 1
-            fileHandle.close()
+try:
+    if sys.argv[1] in g_ValidHelpFlags:
+        printUsage()
+        sys.exit(0)
 
-        except IOError:
-            totalCounts["files-failed"] += 1
-            totalCounts["failed-files-list"].append(currentFile)
+except IndexError:
+    print "locc.py: run with -h for help and usage information."
+    sys.exit(0)
 
-    printSummary(totalCounts)
+
+totalCounts = {
+    "code"          :   0,
+    "comment"       :   0,
+    "whitespace"    :   0,
+    "files-read"    :   0,
+    "files-failed"  :   0,
+    "failed-files-list" : []
+}
+
+files = getFiles(getPath(), getFiletypes())
+for currentFile in files:
+    try:
+        fileHandle = open(currentFile, "r")
+        counter = LocCounter(os.path.splitext(currentFile)[1])
+        for currentLine in fileHandle:
+            counter.parseLine(currentLine)
+        totalCounts["code"] += counter.codeCount
+        totalCounts["comment"] += counter.commentCount
+        totalCounts["whitespace"] += counter.whitespaceCount
+        totalCounts["files-read"] += 1
+        fileHandle.close()
+
+    except IOError:
+        totalCounts["files-failed"] += 1
+        totalCounts["failed-files-list"].append(currentFile)
+
+printSummary(totalCounts)
