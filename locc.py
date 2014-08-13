@@ -6,11 +6,23 @@
 # Author:   Christian Floisand
 # Version:  1.0.2
 # Created:  2013/10/31
-# Modified: 2014/08/12
+# Modified: 2014/08/13
 #
 # Outputs the total number of code lines, comment lines, and whitespace in a project.
 # The files parsed are given by their extensions so the client can decide which file types to use
 # in collecting the data.
+#
+# LICENSE
+# Copyright (C) 2014 Christian Floisand
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see http://www.gnu.org/licenses/.
 #
 
 import os, sys, string
