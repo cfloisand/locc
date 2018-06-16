@@ -15,7 +15,7 @@ results in 1 line of code and 1 comment added to the total.
 
 ### Supported file types ###
 
-	c, cpp, cc, h, hpp, m, mm, cs, py, lua, js
+	c, cpp, cc, h, hpp, m, mm, cs, py, lua, js, swift
 
 ### Sample usage ###
 
