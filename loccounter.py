@@ -58,7 +58,8 @@ CommentTags = {
     ".cs"   : C_CommentTags,
     ".py"   : Py_CommentTags,
     ".lua"  : Lua_CommentTags,
-    ".js"   : C_CommentTags
+    ".js"   : C_CommentTags,
+    ".swift" : C_CommentTags
     }
 
 

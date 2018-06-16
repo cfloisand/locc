@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 #
 # Lines of Code Counter
@@ -30,7 +30,7 @@ from loccounter import LocCounter
 
 
 # Globals
-g_SupportedFiletypes = ["c", "cpp", "cc", "m", "mm", "h", "hpp", "cs", "py", "lua", "js"]
+g_SupportedFiletypes = ["c", "cpp", "cc", "m", "mm", "h", "hpp", "cs", "py", "lua", "js", "swift"]
 g_ValidHelpFlags = ["-h", "-H", "--help", "-?"]
 
 
@@ -38,7 +38,7 @@ def printUsage():
     """Prints usage information to user.
 
     Current supported file types:
-        c, cpp, cc, m, mm, h, hpp, cs, py, lua, js
+        c, cpp, cc, m, mm, h, hpp, cs, py, lua, js, swift
     """
     
     print "usage: locc.py -files=<filetypes...> [path]"
